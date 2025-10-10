@@ -19,9 +19,131 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-def altaCliente(clientes):
-    ...
-    return clientes
+def altaSocio(clientes, buscar):
+    """
+    Si el socio no existe lo agrega a la base de datos, si existe y no esta dado de alta, da la opcion de hacerlo.
+
+    Parametros:
+        clientes (dict)
+        buscar (str)
+    Devuelve:
+        n/a
+    """
+    if (buscar in clientes.keys()):
+        print("Error, socio ya existe.")
+        socio = clientes[buscar]
+        if (socio["activo"] == False):
+            res = input("El usuario esta dado de baja. Desea darlo de alta? [1 = Si / 0 = No]: ")
+            if (res == "1"):
+                socio["activo"] = True
+                print("\nSocio", buscar, socio["nombre"], socio["apellido"] , "dado de alta exitosamente.")
+            elif (res != "0"):
+                res = input("Error, input invalido.")
+    else:
+        nombre = input("Nombre: ")
+        apellido = input("Apellido: ")
+        fechaNacimiento = input("Fecha de nacimiento [dd/mm/aaaa]: ")
+
+        clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
+
+        NumTelefonos = int(input("Camntidad de telefonos: "))
+
+        for i in range (NumTelefonos):
+            tel = input("Telefono " + str(i+1) + ": ")
+            clientes[buscar]["telefonos"][cad] = tel
+        
+        print("Socio agregado exitosamente")
+
+def buscarSocio(clientes, buscar): ### Buscar por distintas caracteristicas(? && Mostrar mas lindo ###
+    """
+    Busca un socio por dni y lo muestra en pantalla
+
+    paramentros:
+        clientes (dict)
+        buscar (str)
+    
+    devuelve:
+        n/a
+    """
+    if (buscar not in clientes.keys()):
+        print("Error, dni no existe.")
+    else:
+        print(buscar, ":")
+        print(clientes[buscar])
+
+def modificarSocio(clientes, buscar): ### Terminar ###
+    """
+    Modifica el valor de un socio
+
+    Parametros:
+        clientes (dict)
+        buscar (str)
+    Devuelve:
+        n/a
+    """
+    if (buscar not in clientes.keys()):
+        print("Error, dni no existe.")
+    else:
+        print(buscar, ":")
+        print(clientes[buscar])
+        print("Que desea modificar?")
+        print("""
+        ---------------------------
+        [1] Modificar nombre
+        [2] Modificar apellido
+        [3] Modificar fecha de nacimiento
+        [4] Modificar telefonnos
+        ---------------------------
+        [0] Volver al menú anterior
+        ---------------------------
+        """)
+
+        userInput = int(input("Seleccione una opción: "))
+
+        if (userInput == 0):
+            print()
+        elif (userInput == 1):
+            print("Nombre actual:", clientes[buscar]["nombre"])
+            cambiar = input("Nuevo nombre: ")
+            clientes[buscar]["nombre"] = cambiar
+            print("Nombre cambiado existosamente")
+        elif (userInput == 2):
+            print("Apellido actual:", clientes[buscar]["apellido"])
+            cambiar = input("Nuevo apellido: ")
+            clientes[buscar]["apellido"] = cambiar
+            print("Apellido cambiado existosamente")
+        elif (userInput == 3):
+            print("Fecha de nacimiento actual:", clientes[buscar]["fechaNacimiento"])
+            cambiar = input("Nueva fecha de nacimiento [dd/mm/aaaa]: ")
+            clientes[buscar]["fechaNacimiento"] = cambiar
+            print("Fecha de nacimiento cambiada existosamente")
+        elif (userInput == 4):
+            print("Actual cant de telefonos:", len(clientes[buscar]["telefonos"]))
+            cant = int(input("Nueva cant de telefonos: "))
+            for j in range (cant):
+                cambiar = input("Nuevo telefono " + str(j+1) + ": ")
+                clientes[buscar]["telefonos"]["telefono"+str(j)] = cambiar
+
+def eliminarSocio(clientes, buscar):
+    """
+    Dar de baja logicamente a un socio
+
+    Parametros:
+        clientes (dict)
+        buscar (str)
+    
+    Devuelve:
+        n/a
+    """
+    if (buscar not in clientes.keys()):
+        print("Error, dni no existe.")
+    else:
+        clienteEliminar = clientes[buscar]
+        if (clienteEliminar["activo"] == False):
+            print("Error, socio ya inactivo.")
+        else:
+            clienteEliminar["activo"] = False
+            print("\nSocio", buscar, clienteEliminar["nombre"], clienteEliminar["apellido"] , "dado de baja exitosamente.")
 
 
 
@@ -382,18 +504,20 @@ def main():
 
                 if opcionSubmenu == "0": # Opción salir del submenú
                     break # No sale del programa, sino que vuelve al menú anterior
-                
-                elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    clientes = altaCliente(clientes)
+
+                DniBuscar = input("Ingresar dni: ")
+
+                if opcionSubmenu == "1":   # Opción 1 del submenú
+                    altaSocio(socios, DniBuscar)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
+                    buscarSocio(socios, DniBuscar)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    modificarSocio(socios, DniBuscar)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    ...
+                    eliminarSocio(socios, DniBuscar)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
