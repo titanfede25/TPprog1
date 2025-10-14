@@ -31,15 +31,19 @@ def altaSocio(clientes, buscar):
         n/a
     """
     if (buscar in clientes.keys()):
-        print("Error, socio ya existe.")
+        print("Advertencia, socio ya existe.")
         socio = clientes[buscar]
         if (socio["activo"] == False):
-            res = input("El usuario esta dado de baja. Desea darlo de alta? [1 = Si / 0 = No]: ")
-            if (res == "1"):
-                socio["activo"] = True
-                print("\nSocio", buscar, socio["nombre"], socio["apellido"] , "dado de alta exitosamente.")
-            elif (res != "0"):
-                res = input("Error, input invalido.")
+            res = -1
+            while (res != 1 and res != 0):
+                res = int(input("El usuario esta dado de baja. Desea darlo de alta? [1 = Si / 0 = No]: "))
+                if (res == 1):
+                    socio["activo"] = True
+                    print("\nSocio", buscar, socio["nombre"], socio["apellido"] , "dado de alta exitosamente.")
+                elif (res == 0):
+                    print("\nEl usuario sigue dado de baja.")
+                else:
+                    print("\nError, input invalido.")
     else:
         nombre = input("Nombre: ")
         apellido = input("Apellido: ")
@@ -47,7 +51,7 @@ def altaSocio(clientes, buscar):
 
         clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
 
-        NumTelefonos = int(input("Camntidad de telefonos: "))
+        NumTelefonos = int(input("Cantidad de telefonos: "))
 
         for i in range (NumTelefonos):
             tel = input("Telefono " + str(i+1) + ": ")
@@ -69,8 +73,13 @@ def buscarSocio(clientes, buscar): ### Buscar por distintas caracteristicas(? &&
     if (buscar not in clientes.keys()):
         print("Error, dni no existe.")
     else:
-        print(buscar, ":")
-        print(clientes[buscar])
+        print("Activo:", clientes[buscar]["activo"])
+        print("Nombre:", clientes[buscar]["nombre"])
+        print("Apellido:", clientes[buscar]["apellido"])
+        print("Fecha de nacimiento:", clientes[buscar]["fechaNacimiento"])
+        telefonos = clientes[buscar]["telefonos"]
+        for k, telefono in telefonos.items():
+            print(k + ":", telefono)
 
 def modificarSocio(clientes, buscar): ### Terminar ###
     """
@@ -85,45 +94,46 @@ def modificarSocio(clientes, buscar): ### Terminar ###
     if (buscar not in clientes.keys()):
         print("Error, dni no existe.")
     else:
-        print(buscar, ":")
-        print(clientes[buscar])
-        print("Que desea modificar?")
-        print("""
-        ---------------------------
-        [1] Modificar nombre
-        [2] Modificar apellido
-        [3] Modificar fecha de nacimiento
-        [4] Modificar telefonnos
-        ---------------------------
-        [0] Volver al menú anterior
-        ---------------------------
-        """)
+        userInput = -1
+        while (userInput != 0):
+            print(buscar, ":")
+            print(clientes[buscar])
+            print("Que desea modificar?")
+            print("---------------------------")
+            print("[1] Modificar nombre")
+            print("[2] Modificar apellido")
+            print("[3] Modificar fecha de nacimiento")
+            print("[4] Modificar telefonnos")
+            print("---------------------------")
+            print("[0] Volver al menú anterior")
+            print("---------------------------")
 
-        userInput = int(input("Seleccione una opción: "))
+            userInput = int(input("Seleccione una opción: "))
 
-        if (userInput == 0):
-            print()
-        elif (userInput == 1):
-            print("Nombre actual:", clientes[buscar]["nombre"])
-            cambiar = input("Nuevo nombre: ")
-            clientes[buscar]["nombre"] = cambiar
-            print("Nombre cambiado existosamente")
-        elif (userInput == 2):
-            print("Apellido actual:", clientes[buscar]["apellido"])
-            cambiar = input("Nuevo apellido: ")
-            clientes[buscar]["apellido"] = cambiar
-            print("Apellido cambiado existosamente")
-        elif (userInput == 3):
-            print("Fecha de nacimiento actual:", clientes[buscar]["fechaNacimiento"])
-            cambiar = input("Nueva fecha de nacimiento [dd/mm/aaaa]: ")
-            clientes[buscar]["fechaNacimiento"] = cambiar
-            print("Fecha de nacimiento cambiada existosamente")
-        elif (userInput == 4):
-            print("Actual cant de telefonos:", len(clientes[buscar]["telefonos"]))
-            cant = int(input("Nueva cant de telefonos: "))
-            for j in range (cant):
-                cambiar = input("Nuevo telefono " + str(j+1) + ": ")
-                clientes[buscar]["telefonos"]["telefono"+str(j)] = cambiar
+            print("")
+            if (userInput == 0):
+                print()
+            elif (userInput == 1):
+                print("Nombre actual:", clientes[buscar]["nombre"])
+                cambiar = input("Nuevo nombre: ")
+                clientes[buscar]["nombre"] = cambiar
+                print("Nombre cambiado existosamente")
+            elif (userInput == 2):
+                print("Apellido actual:", clientes[buscar]["apellido"])
+                cambiar = input("Nuevo apellido: ")
+                clientes[buscar]["apellido"] = cambiar
+                print("Apellido cambiado existosamente")
+            elif (userInput == 3):
+                print("Fecha de nacimiento actual:", clientes[buscar]["fechaNacimiento"])
+                cambiar = input("Nueva fecha de nacimiento [dd/mm/aaaa]: ")
+                clientes[buscar]["fechaNacimiento"] = cambiar
+                print("Fecha de nacimiento cambiada existosamente")
+            elif (userInput == 4):
+                print("Actual cant de telefonos:", len(clientes[buscar]["telefonos"]))
+                cant = int(input("Nueva cant de telefonos: "))
+                for j in range (cant):
+                    cambiar = input("Nuevo telefono " + str(j+1) + ": ")
+                    clientes[buscar]["telefonos"]["telefono"+str(j)] = cambiar
 
 def eliminarSocio(clientes, buscar):
     """
@@ -511,7 +521,9 @@ def main():
     }
 
 
-    pagos = {}  # Nuevo diccionario para almacenar los pagos
+    pagos = {
+
+    }  # Nuevo diccionario para almacenar los pagos
 
 
 
