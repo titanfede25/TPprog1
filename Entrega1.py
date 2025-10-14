@@ -1,5 +1,6 @@
 """
 -----------------------------------------------------------------------------------------------
+
 Título: Entrega 1 del TP grupal
 Fecha: Hecho para el 22/10/2025
 Autor: Equipo 1. Federico Sznajderhaus, Benjamín Moyano, Samuel Franco Salazar, Galo Barus.
