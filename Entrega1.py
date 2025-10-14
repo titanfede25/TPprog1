@@ -145,7 +145,72 @@ def eliminarSocio(clientes, buscar):
             clienteEliminar["activo"] = False
             print("\nSocio", buscar, clienteEliminar["nombre"], clienteEliminar["apellido"] , "dado de baja exitosamente.")
 
+#----------------------------------------------------------------------------------------------
+# FUNCIONES DE PAGOS
+#----------------------------------------------------------------------------------------------
+def registrarPago(pagos, socios, deportes):
+    """
+    Registra un nuevo pago hecho por un socio.
+    """
+    dni = input("Ingrese DNI del socio: ")
 
+    # Verificar si el socio existe y está activo
+    if dni not in socios.keys():
+        print("Error: el socio no existe.")
+        return
+    if not socios[dni]["activo"]:
+        print("Error: el socio está dado de baja.")
+        return
+    
+    # Mostrar lista de deportes activos
+    print("\nDeportes disponibles:")
+    for dep, datos in deportes.items():
+        if datos.get("activo", False):
+            print(f"- {dep} (${datos.get('arancel',0)})")
+    
+    deporte = input("\nIngrese el deporte: ").lower()
+    if deporte not in deportes.keys() or not deportes[deporte].get("activo", False):
+        print("Error: deporte inválido o inactivo.")
+        return
+
+    mes = input("Ingrese el mes del pago (ej: 10 para octubre): ")
+    anio = input("Ingrese el año del pago: ")
+
+    monto = deportes[deporte]["arancel"]
+
+    # Guardar el pago
+    id_pago = f"{dni}-{deporte}-{mes}-{anio}"
+    if id_pago in pagos:
+        print("Error: este pago ya fue registrado.")
+        return
+    
+    pagos[id_pago] = {
+        "dni": dni,
+        "deporte": deporte,
+        "mes": mes,
+        "anio": anio,
+        "monto": monto
+    }
+
+    print(f"\n✅ Pago registrado con éxito por ${monto} para {socios[dni]['nombre']} {socios[dni]['apellido']} ({deporte}).")
+
+def eliminarPago(pagos):
+    """
+    Elimina un pago ya registrado.
+    """
+    dni = input("Ingrese DNI del socio: ")
+    deporte = input("Ingrese el deporte: ").lower()
+    mes = input("Ingrese el mes del pago (ej: 10 para octubre): ")
+    anio = input("Ingrese el año del pago: ")
+
+    id_pago = f"{dni}-{deporte}-{mes}-{anio}"
+
+    if id_pago not in pagos.keys():
+        print("Error: no existe ese pago.")
+        return
+    
+    del pagos[id_pago]
+    print("✅ Pago eliminado correctamente.")
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -445,6 +510,7 @@ def main():
     }
 
 
+    pagos = {}  # Nuevo diccionario para almacenar los pagos
 
 
 
@@ -593,10 +659,10 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
+                    registrarPago(pagos, socios, deportes)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
+                    eliminarPago(pagos)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
