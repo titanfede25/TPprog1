@@ -43,7 +43,7 @@ def altaSocio(clientes, buscar):
     else:
         nombre = input("Nombre: ")
         apellido = input("Apellido: ")
-        fechaNacimiento = input("Fecha de nacimiento [dd/mm/aaaa]: ")
+        fechaNacimiento = input("Fecha de nacimiento [dd/mm/aaaa]: ") 
 
         clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
 
@@ -222,7 +222,7 @@ def main():
     #----------------------------------------------------------------------------------------------
     socios = {
         "11222333": {
-            "activo": True,
+            "activo": False,
             "nombre": "Federico",
             "apellido": "Sznajderhaus",
             "fechaNacimiento": "07/04/2006",
@@ -573,6 +573,8 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
 
                 DniBuscar = input("Ingresar dni: ")
+                while DniBuscar.isdigit() == False:
+                    DniBuscar = input("Ingresar dni válido: ")
 
                 if opcionSubmenu == "1":   # Opción 1 del submenú
                     altaSocio(socios, DniBuscar)
