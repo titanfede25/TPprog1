@@ -28,26 +28,32 @@ def altaSocio(clientes, buscar):
         clientes (dict)
         buscar (str)
     Devuelve:
-        n/a
+        clientes (diccionario)
     """
     if (buscar in clientes.keys()):
-        print("Advertencia, socio ya existe.")
-        socio = clientes[buscar]
-        if (socio["activo"] == False):
-            res = -1
-            while (res != 1 and res != 0):
-                res = int(input("El usuario esta dado de baja. Desea darlo de alta? [1 = Si / 0 = No]: "))
-                if (res == 1):
-                    socio["activo"] = True
-                    print("\nSocio", buscar, socio["nombre"], socio["apellido"] , "dado de alta exitosamente.")
-                elif (res == 0):
-                    print("\nEl usuario sigue dado de baja.")
-                else:
-                    print("\nError, input invalido.")
+        print("Error, el socio ya existe.\n")
+        print(clientes[buscar])
     else:
         nombre = input("Nombre: ")
         apellido = input("Apellido: ")
-        fechaNacimiento = input("Fecha de nacimiento [dd/mm/aaaa]: ") 
+
+        diaNacimiento = int(input("Dia de nacimiento: "))
+        mesNacimiento = int(input("Mes de nacimiento: "))
+        anioNacimiento = int(input("año de nacimiento: "))
+        anioBiciesto = (anioNacimiento % 4 == 0 and (anioNacimiento % 100 != 0 or anioNacimiento % 400 == 0))
+
+
+        if (diaNacimiento < 1 or diaNacimiento > 31 or mesNacimiento < 1 or mesNacimiento > 12 or anioNacimiento < 1900 or anioNacimiento > 2025):
+            print("Error, fecha invalida")
+            return
+        elif ((mesNacimiento == 4 or mesNacimiento == 6 or mesNacimiento == 9 or  mesNacimiento == 11) and diaNacimiento == 31):
+            print("Error, fecha invalida.")
+            return
+        elif (not anioBiciesto and mesNacimiento == 2 and diaNacimiento > 29):
+            print("Error, fecha invalida")
+            return
+
+        fechaNacimiento = "" + str(diaNacimiento) + "/" + str(mesNacimiento) + "/" + str(anioNacimiento)
 
         clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
 
@@ -55,13 +61,18 @@ def altaSocio(clientes, buscar):
 
         for i in range (NumTelefonos):
             tel = input("Telefono " + str(i+1) + ": ")
-            clientes[buscar]["telefonos"][cad] = tel
-        
+            if (int(tel) <= 0):
+                print("Error, numero invalido.")
+            else:
+                clientes[buscar]["telefonos"]["telefono"+str(i+1)] = tel
+
         print("Socio agregado exitosamente")
 
-def buscarSocio(clientes, buscar): ### Buscar por distintas caracteristicas(? && Mostrar mas lindo ###
+        return clientes
+
+def listarSocios(clientes):
     """
-    Busca un socio por dni y lo muestra en pantalla
+    Busca y lista todos los socios activos
 
     paramentros:
         clientes (dict)
@@ -70,16 +81,16 @@ def buscarSocio(clientes, buscar): ### Buscar por distintas caracteristicas(? &&
     devuelve:
         n/a
     """
-    if (buscar not in clientes.keys()):
-        print("Error, dni no existe.")
-    else:
-        print("Activo:", clientes[buscar]["activo"])
-        print("Nombre:", clientes[buscar]["nombre"])
-        print("Apellido:", clientes[buscar]["apellido"])
-        print("Fecha de nacimiento:", clientes[buscar]["fechaNacimiento"])
-        telefonos = clientes[buscar]["telefonos"]
-        for k, telefono in telefonos.items():
-            print(k + ":", telefono)
+    for dni, cliente in clientes.items():
+        if (clientes[dni]["activo"] == True):
+            print("\nNombre:", cliente["nombre"])
+            print("Apellido:", cliente["apellido"])
+            print("Fecha de nacimiento:", cliente["fechaNacimiento"])
+            telefonos = clientes[dni]["telefonos"]
+            for k, telefono in telefonos.items():
+                print(k + ":", telefono)
+    
+    return
 
 def modificarSocio(clientes, buscar): ### Terminar ###
     """
@@ -89,7 +100,7 @@ def modificarSocio(clientes, buscar): ### Terminar ###
         clientes (dict)
         buscar (str)
     Devuelve:
-        n/a
+        clientes (diccionario)
     """
     if (buscar not in clientes.keys()):
         print("Error, dni no existe.")
@@ -100,10 +111,11 @@ def modificarSocio(clientes, buscar): ### Terminar ###
             print(clientes[buscar])
             print("Que desea modificar?")
             print("---------------------------")
-            print("[1] Modificar nombre")
-            print("[2] Modificar apellido")
-            print("[3] Modificar fecha de nacimiento")
-            print("[4] Modificar telefonnos")
+            print("[1] Modificar estado")
+            print("[2] Modificar nombre")
+            print("[3] Modificar apellido")
+            print("[4] Modificar fecha de nacimiento")
+            print("[5] Modificar telefonnos")
             print("---------------------------")
             print("[0] Volver al menú anterior")
             print("---------------------------")
@@ -112,30 +124,57 @@ def modificarSocio(clientes, buscar): ### Terminar ###
 
             print("")
             if (userInput == 0):
-                print()
+                break
             elif (userInput == 1):
+                res = -1
+                estadoSocio = clientes[buscar]["activo"]
+                while (res != 1 and res != 0):
+                    print("Estado actual:", estadoSocio)
+                    if (estadoSocio == True):
+                        res = int(input("Desea darlo de baja? [1 = si / 0 = No]: "))
+                    else:
+                        res = int(input("Desea darlo de alta? [1 = si / 0 = No]: "))
+
+                    if (res == 1 and estadoSocio == True):
+                            clientes[buscar]["activo"] = False
+                            print("Socio dado de baja exitosamente.\n")
+                    elif (res == 1 and estadoSocio == False):
+                            clientes[buscar]["activo"] = True
+                            print("Socio dado de alta exitosamente.\n")
+                    elif (res == 0):
+                        print("No se hicieron cambios\n")
+                    else:
+                        print("Error, input invalido\n")                
+            elif (userInput == 2):
                 print("Nombre actual:", clientes[buscar]["nombre"])
                 cambiar = input("Nuevo nombre: ")
                 clientes[buscar]["nombre"] = cambiar
                 print("Nombre cambiado existosamente")
-            elif (userInput == 2):
+            elif (userInput == 3):
                 print("Apellido actual:", clientes[buscar]["apellido"])
                 cambiar = input("Nuevo apellido: ")
                 clientes[buscar]["apellido"] = cambiar
                 print("Apellido cambiado existosamente")
-            elif (userInput == 3):
+            elif (userInput == 4):
                 print("Fecha de nacimiento actual:", clientes[buscar]["fechaNacimiento"])
                 cambiar = input("Nueva fecha de nacimiento [dd/mm/aaaa]: ")
                 clientes[buscar]["fechaNacimiento"] = cambiar
                 print("Fecha de nacimiento cambiada existosamente")
-            elif (userInput == 4):
+            elif (userInput == 5):
                 print("Actual cant de telefonos:", len(clientes[buscar]["telefonos"]))
                 cant = int(input("Nueva cant de telefonos: "))
-                for j in range (cant):
-                    cambiar = input("Nuevo telefono " + str(j+1) + ": ")
-                    clientes[buscar]["telefonos"]["telefono"+str(j)] = cambiar
+                for i in range (cant):
+                    cambiar = input("Nuevo telefono " + str(i+1) + ": ")
+                    if (int(cambiar) <= 0):
+                        print("Error, numero invalido.\n")
+                        i -= 1
+                    else:
+                        clientes[buscar]["telefonos"]["telefono"+str(i)] = cambiar
 
-def eliminarSocio(clientes, buscar):
+    return clientes
+
+
+def bajaSocio(clientes, deportes, pagos, buscar):
     """
     Dar de baja logicamente a un socio
 
@@ -144,17 +183,22 @@ def eliminarSocio(clientes, buscar):
         buscar (str)
     
     Devuelve:
-        n/a
+        clientes (diccionario)
     """
     if (buscar not in clientes.keys()):
         print("Error, dni no existe.")
     else:
+        ultimoAnioPagado = pagos[buscar]["ano"]
+        ultimoMesPagado = pagos[buscar]["mes"]
+
         clienteEliminar = clientes[buscar]
         if (clienteEliminar["activo"] == False):
-            print("Error, socio ya inactivo.")
+            print("Error, el socio ya esta dao de baja.")
         else:
             clienteEliminar["activo"] = False
             print("\nSocio", buscar, clienteEliminar["nombre"], clienteEliminar["apellido"] , "dado de baja exitosamente.")
+    
+    return clientes
 
 #----------------------------------------------------------------------------------------------
 # FUNCIONES DE PAGOS
@@ -190,7 +234,7 @@ def registrarPago(pagos, socios, deportes):
     monto = deportes[deporte]["arancel"]
 
     # Guardar el pago
-    id_pago = f"{dni}-{deporte}-{mes}-{anio}"
+    id_pago = f"{dni}-{deporte}-{mes}-{anio}" #  año.mes.dia hora.mes.segundo
     if id_pago in pagos:
         print("Error: este pago ya fue registrado.")
         return
@@ -379,7 +423,7 @@ def main():
                 "profesor1": "Carlos Herrera"
             }
         },
-        "tenis": {
+        "tennis": {
             "activo": True,
             "arancel": 25000.0,
             "profesoresNinos": {
@@ -522,8 +566,97 @@ def main():
 
 
     pagos = {
-
-    }  # Nuevo diccionario para almacenar los pagos
+        "2025.10.15 17:34:18": {
+            "idSocio": "11222333",
+            "idDeporte": "tennis",
+            "estadoDePago": "pagado",
+            "monto": 25000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "efectivo",
+        },
+        "2025.10.20 14:24:48": {
+            "idSocio": "99888777",
+            "idDeporte": "boxeo",
+            "estadoDePago": "pagado",
+            "monto": 31000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "tarjeta",
+        },
+        "2025.10.21 10:15:32": {
+            "idSocio": "30456789",
+            "idDeporte": "natacion",
+            "estadoDePago": "pagado",
+            "monto": 32000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "efectivo",
+        },
+        "2025.10.22 11:45:00": {
+            "idSocio": "28543210",
+            "idDeporte": "football",
+            "estadoDePago": "pagado",
+            "monto": 30000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "tarjeta",
+        },
+        "2025.10.23 09:30:15": {
+            "idSocio": "32659874",
+            "idDeporte": "basketball",
+            "estadoDePago": "pagado",
+            "monto": 28000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "efectivo",
+        },
+        "2025.10.24 16:00:00": {
+            "idSocio": "29547681",
+            "idDeporte": "rugby",
+            "estadoDePago": "pagado",
+            "monto": 34000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "tarjeta",
+        },
+        "2025.10.25 13:22:45": {
+            "idSocio": "31478562",
+            "idDeporte": "voley",
+            "estadoDePago": "pagado",
+            "monto": 27000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "efectivo",
+        },
+        "2025.10.26 18:45:30": {
+            "idSocio": "27894561",
+            "idDeporte": "hockey",
+            "estadoDePago": "pagado",
+            "monto": 29000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "tarjeta",
+        },
+        "2025.10.27 12:10:50": {
+            "idSocio": "30985642",
+            "idDeporte": "jiuJitsu",
+            "estadoDePago": "pagado",
+            "monto": 28000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "efectivo",
+        },
+        "2025.10.28 14:55:20": {
+            "idSocio": "29765438",
+            "idDeporte": "karate",
+            "estadoDePago": "pagado",
+            "monto": 26000.0,
+            "ano": "2025",
+            "mes": "10",
+            "metodoDePago": "tarjeta",
+        },
+    } # Nuevo diccionario para almacenar los pagos
 
 
 
@@ -566,7 +699,7 @@ def main():
                     print("MENÚ PRINCIPAL > MENÚ DE SOCIOS")
                     print("---------------------------")
                     print("[1] Ingresar socio")
-                    print("[2] Buscar socio/s")
+                    print("[2] listar socios activos")
                     print("[3] Modificar socio")
                     print("[4] Eliminar socio")
                     print("---------------------------")
@@ -584,21 +717,23 @@ def main():
                 if opcionSubmenu == "0": # Opción salir del submenú
                     break # No sale del programa, sino que vuelve al menú anterior
 
-                DniBuscar = input("Ingresar dni: ")
-                while DniBuscar.isdigit() == False:
-                    DniBuscar = input("Ingresar dni válido: ")
+
+                if (opcionSubmenu == "1" or opcionSubmenu == "3" or opcionSubmenu == "4"):
+                    dniBuscar = input("Ingresar dni: ")
+                    while dniBuscar.isdigit() == False:
+                        dniBuscar = input("Ingresar dni válido: ")
 
                 if opcionSubmenu == "1":   # Opción 1 del submenú
-                    altaSocio(socios, DniBuscar)
+                    socios = altaSocio(socios, dniBuscar)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    buscarSocio(socios, DniBuscar)
+                    listarSocios(socios)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    modificarSocio(socios, DniBuscar)
+                    socios = modificarSocio(socios, dniBuscar)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    eliminarSocio(socios, DniBuscar)
+                    socios = bajaSocio(socios, deportes, pagos, dniBuscar)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
