@@ -92,7 +92,7 @@ def listarSocios(clientes):
     
     return
 
-def modificarSocio(clientes, buscar): ### Terminar ###
+def modificarSocio(clientes, buscar):
     """
     Modifica el valor de un socio
 
@@ -173,8 +173,7 @@ def modificarSocio(clientes, buscar): ### Terminar ###
 
     return clientes
 
-
-def bajaSocio(clientes, deportes, pagos, buscar):
+def bajaSocio(clientes, deportes, pagos, buscar): # Terminar
     """
     Dar de baja logicamente a un socio
 
@@ -187,9 +186,26 @@ def bajaSocio(clientes, deportes, pagos, buscar):
     """
     if (buscar not in clientes.keys()):
         print("Error, dni no existe.")
+        return
+
     else:
         ultimoAnioPagado = pagos[buscar]["ano"]
         ultimoMesPagado = pagos[buscar]["mes"]
+
+    userInput = -1
+    while (userInput != 1 and userInput != 0):
+
+        for i in range(len(pagos)):
+            print()
+            print("---------------------------")
+            print("MENÚ PRINCIPAL > MENÚ DE PAGOS")
+            print("---------------------------")
+            print("[1] Darse de baja de un deporte")
+            print("[2] Darse de baja totalmente")
+            print("---------------------------")
+            print("[0] Volver al menú anterior")
+            print("---------------------------")
+            print()
 
         clienteEliminar = clientes[buscar]
         if (clienteEliminar["activo"] == False):
@@ -199,6 +215,160 @@ def bajaSocio(clientes, deportes, pagos, buscar):
             print("\nSocio", buscar, clienteEliminar["nombre"], clienteEliminar["apellido"] , "dado de baja exitosamente.")
     
     return clientes
+
+
+#----------------------------------------------------------------------------------------------
+# FUNCIONES DE DEPORTES
+#----------------------------------------------------------------------------------------------
+def crearDeporte(deportes, busqueda):
+    """
+    Se crea o reactiva un deporte.
+
+    Parámetros:
+        deportes: dict
+        busqueda: str
+    """
+    if busqueda in deportes:
+        print("Advertencia, este deporte ya existe.")
+        deporte = deportes[busqueda]
+        if not deporte["activo"]:
+            res = -1
+            while res not in [0, 1]:
+                res = int(input("El deporte está dado de baja. ¿Desea darlo de alta? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    nueva_fecha = input("Ingrese la nueva fecha de reactivación (YYYY-MM-DD): ")
+                    deporte["activo"] = True
+                    deporte["fechas"]["creacion"].append(nueva_fecha)
+                    deporte["fechas"]["cierre"] = None
+                    print("Deporte reactivado.")
+                elif res == 0:
+                    print("El deporte se mantiene inactivo.")
+    else:
+        arancel = float(input("Arancel: "))
+        director = input("Nombre del instructor principal: ")
+        fecha_creacion = input("Ingrese la fecha de creación (YYYY-MM-DD): ")
+
+        print("\nDatos ingresados:")
+        print("Deporte:", busqueda)
+        print("Arancel:", arancel)
+        print("Director:", director)
+        print("Fecha de creación:", fecha_creacion)
+
+        confirmar = input("¿Los datos son correctos? [si/no]: ").lower()
+        if confirmar == "si":
+            deportes[busqueda] = {
+                "activo": True,
+                "arancel": arancel,
+                "director principal": director,
+                "fechas": {
+                    "creacion": [fecha_creacion],
+                    "cierre": None
+                }
+            }
+            print("Deporte creado exitosamente.")
+        else:
+            print("Operación cancelada.")
+
+def listaDeDeportes(deportes):
+    """
+    Muestra todos los deportes activos (sin fecha de cierre).
+
+    Parámetros:
+        deportes: dict
+    """
+    activos = False
+    print("\nDeportes activos:")
+    for clave, datos in deportes.items():
+        if datos["activo"] and datos["fechas"]["cierre"] is None:
+            activos = True
+            print("---------------------------")
+            print("Deporte:", clave)
+            print("Arancel:", datos["arancel"])
+            print("Director principal:", datos["director principal"])
+            print("Fechas de creación:", ", ".join(datos["fechas"]["creacion"]))
+    if not activos:
+        print("No hay deportes activos registrados.")
+    else:
+        print("---------------------------")
+
+def modificarDeporte(deportes, busqueda):
+    """
+    Se modifica el deporte
+
+    Parámetros:
+        deportes: dict
+        busqueda: str
+    """
+    if busqueda not in deportes:
+        print("Deporte no existente")
+    else:
+        userInput = -1
+
+        while userInput != 0:
+            print(busqueda, ":")
+            print(deportes[busqueda])
+            print("¿Qué desea modificar?")
+            print("---------------------------")
+            print("[1] Modificar arancel")
+            print("[2] Modificar profesor principal")
+            print("---------------------------")
+            print("[0] Volver al menú anterior")
+            print("---------------------------")
+
+            userInput = int(input("Seleccione una opción: "))
+            print("")
+
+            if userInput == 0:
+                print("Volviendo al menú anterior...\n")
+
+            elif userInput == 1:
+                print("Arancel actual:", deportes[busqueda]["arancel"])
+                cambiar = float(input("Nueva tarifa: "))
+                confirmar = input(f"¿Desea guardar el nuevo arancel {cambiar}? [si/no]: ").lower()
+                if confirmar == "si":
+                    deportes[busqueda]["arancel"] = cambiar
+                    print("Tarifa modificada exitosamente\n")
+                else:
+                    print("Modificación cancelada\n")
+
+            elif userInput == 2:
+                print("Profesor actual:", deportes[busqueda]["director principal"])
+                cambiar = input("Nuevo profesor principal: ")
+                confirmar = input(f"¿Desea guardar el nuevo profesor '{cambiar}'? [si/no]: ").lower()
+                if confirmar == "si":
+                    deportes[busqueda]["director principal"] = cambiar
+                    print("Profesor cambiado exitosamente\n")
+                else:
+                    print("Modificación cancelada\n")
+
+def eliminarDeporte(deportes, busqueda):
+    """
+    Da de baja un deporte y registra la fecha de cierre.
+
+    Parámetros:
+        deportes: dict
+        busqueda: str
+    """
+    if busqueda not in deportes:
+        print("Error, deporte no existe.")
+    else:
+        deporte = deportes[busqueda]
+        if not deporte["activo"]:
+            print("Error, el deporte ya está inactivo.")
+        else:
+            print("\nDatos del deporte a eliminar:")
+            print("ID:", busqueda)
+            print("Fechas de creación:", ", ".join(deporte["fechas"]["creacion"]))
+
+            confirmar = input("¿Está seguro que desea dar de baja este deporte? [si/no]: ").lower()
+            if confirmar == "si":
+                fechaCierre = input("Ingrese la fecha de cierre (YYYY-MM-DD): ")
+                deporte["activo"] = False
+                deporte["fechas"]["cierre"] = fechaCierre
+                print("Deporte dado de baja exitosamente.")
+            else:
+                print("Operación cancelada.")
+
 
 #----------------------------------------------------------------------------------------------
 # FUNCIONES DE PAGOS
@@ -762,21 +932,27 @@ def main():
                     else:
                         input("Opción inválida. Presione ENTER para volver a seleccionar.")
                 print()
+                
+#                if (opcionSubmenu == "1" or opcionSubmenu == "3" or opcionSubmenu == "4"):                        
+                deporteBuscar = input("Ingresar deporte: ")
+#                    while (deporteBuscar not in deportes.keys()):
+#                        deporteBuscar = input("Ingresar deporte valido: ")
+
 
                 if opcionSubmenu == "0": # Opción salir del submenú
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
+                    crearDeporte(deportes, deporteBuscar)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
+                    listaDeDeportes(deportes)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    modificarDeporte(deportes, deporteBuscar)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    ...
+                    eliminarDeporte(deportes, deporteBuscar)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
