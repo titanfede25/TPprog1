@@ -563,177 +563,107 @@ def main():
     
 
     deportes = {
-        "football": {
-            "activo": True,
-            "arancel": 30000.0,
-            "profesoresNinos": {
-                "profesor1": "Juan Ramírez"
+    "football": {
+        "activo": True,
+        "arancel": 35000.0,
+        "director principal": "Nicolás Medina",
+        "fechas": {
+            "creacion": ["2025-04-01"],
+            "cierre": None
+        }
+    },
+    "hockey": {
+        "activo": True,
+        "arancel": 27000.0,
+        "director principal": "Isabel Fuentes",
+        "fechas": {
+            "creacion": ["2025-02-14"],
+            "cierre": None
+        }
+    },
             },
-            "profesoresAdolecentes": {
-                "profesor1": "Matías Méndez",
-                "profesor2": "Roberto Chávez",
-                "profesor3": "Ramiro Moyano"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Pedro Arroyo",
-                "profesor2": "Ramiro Moyano"
-            }
-        },
-        "basketball": {
-            "activo": True,
-            "arancel": 28000.0,
-            "profesoresNinos": {
-                "profesor1": "Claudio García"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Esteban López",
-                "profesor2": "Pablo Giménez"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Carlos Herrera"
-            }
-        },
-        "tennis": {
-            "activo": True,
-            "arancel": 25000.0,
-            "profesoresNinos": {
-                "profesor1": "Ana Torres"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Luciano Díaz",
-                "profesor2": "Gabriela Ortega"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Julián Muñoz"
-            }
-        },
-        "natacion": {
-            "activo": True,
-            "arancel": 32000.0,
-            "profesoresNinos": {
-                "profesor1": "Mariana Silva"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Andrés Paredes",
-                "profesor2": "Diego Bustos"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Laura Pereyra"
-            }
-        },
-        "voley": {
-            "activo": True,
-            "arancel": 27000.0,
-            "profesoresNinos": {
-                "profesor1": "Santiago Castro"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Hernán Figueroa",
-                "profesor2": "Martín Ríos"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Soledad Vega"
-            }
-        },
-        "hockey": {
-            "activo": True,
-            "arancel": 29000.0,
-            "profesoresNinos": {
-                "profesor1": "Cecilia Benítez"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Julieta Acosta",
-                "profesor2": "Paula Rojas"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Marcela Ruiz"
-            }
-        },
-        "gimnasia": {
-            "activo": True,
-            "arancel": 22000.0,
-            "profesoresNinos": {
-                "profesor1": "Carolina Sánchez"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Tamara Gutiérrez"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Silvia Romero"
-            }
-        },
-        "boxeo": {
-            "activo": True,
-            "arancel": 31000.0,
-            "profesoresNinos": {
-                "profesor1": "Oscar Fernández"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Pablo Correa"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Jorge Molina",
-                "profesor2": "Eduardo Vargas"
-            }
-        },
-        "karate": {
-            "activo": True,
-            "arancel": 26000.0,
-            "profesoresNinos": {
-                "profesor1": "Ricardo Soto"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Fernando Cruz"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Miguel Navarro"
-            }
-        },
-        "rugby": {
-            "activo": True,
-            "arancel": 34000.0,
-            "profesoresNinos": {
-                "profesor1": "Alejandro Méndez"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Ignacio Romero",
-                "profesor2": "Bruno Quintana"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Gastón Herrera"
-            }
-        },
-        "padel": {
-            "activo": True,
-            "arancel": 26000.0,
-            "profesoresNinos": {
-                "profesor1": "Federico Cabrera"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Sebastián Olivera",
-                "profesor2": "Ramiro Quiroga"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Ignacio Salazar"
-            }
-        },
-        "jiuJitsu": {
-            "activo": True,
-            "arancel": 28000.0,
-            "profesoresNinos": {
-                "profesor1": "Diego Ferreira"
-            },
-            "profesoresAdolecentes": {
-                "profesor1": "Marcos Ibarra",
-                "profesor2": "Andrés Silva"
-            },
-            "profesoresAdultos": {
-                "profesor1": "Rodrigo Costa",
-                "profesor2": "Leonardo Duarte"
-            }
+    "basketball": {
+        "activo": True,
+        "arancel": 28000.0,
+        "director principal": "Isabel Martinez",
+        "fechas": {
+            "creacion": ["2025-02-28"],
+            "cierre": None
+        }
+    },
+    "voley": {
+        "activo": False,
+        "arancel": 29000.0,
+        "director principal": "Thiago Ribeiro",
+        "fechas": {
+            "creacion": ["2025-01-10", "2025-07-20"],
+            "cierre": "2025-09-30"
+        }
+    },
+    "jiuJitsu": {
+        "activo": True,
+        "arancel": 26000.0,
+        "director principal": "Bruno Sosa",
+        "fechas": {
+            "creacion": ["2025-05-05"],
+            "cierre": None
+        }
+    },
+    "boxeo": {
+        "activo": True,
+        "arancel": 37000.0,
+        "director principal": "Carla Vázquez",
+        "fechas": {
+            "creacion": ["2025-03-18"],
+            "cierre": None
+        }
+    },
+    "karate": {
+        "activo": False,
+        "arancel": 31000.0,
+        "director principal": "Lucía Herrera",
+        "fechas": {
+            "creacion": ["2025-06-01"],
+            "cierre": "2025-08-15"
+        }
+    },
+    "tennis": {
+        "activo": True,
+        "arancel": 28000.0,
+        "director principal": "Tomás Villalba",
+        "fechas": {
+            "creacion": ["2025-07-10"],
+            "cierre": None
+        }
+    },
+    "natacion": {
+        "activo": True,
+        "arancel": 33000.0,
+        "director principal": "Esteban Ríos",
+        "fechas": {
+            "creacion": ["2025-04-25"],
+            "cierre": None
+        }
+    },
+    "handball": {
+        "activo": True,
+        "arancel": 29000.0,
+        "director principal": "María Elena Torres",
+        "fechas": {
+            "creacion": ["2025-02-05"],
+            "cierre": None
+        }
+    },
+    "rugby": {
+        "activo": False,
+        "arancel": 40000.0,
+        "director principal": "Federico Ledesma",
+        "fechas": {
+            "creacion": ["2025-01-15"],
+            "cierre": "2025-07-01"
         }
     }
-
+})
 
     pagos = {
         "2025.10.15 17:34:18": {
