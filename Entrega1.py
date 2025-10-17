@@ -237,15 +237,15 @@ def crearDeporte(deportes, busqueda):
         if not deporte["activo"]:
             res = -1
             while res not in [0, 1]:
-                res = int(input("El deporte está dado de baja. ¿Desea darlo de alta? [1 = Sí / 0 = No]: "))
-                if res == 1:
+                res = input("El deporte está dado de baja. ¿Desea darlo de alta? [Sí / No]:").lower()
+                if res == si:
                     nueva_fecha = input("Ingrese la nueva fecha de reactivación (DD-MM-YYYY): ")
                     deporte["activo"] = True
                     deporte["fechas"]["creacion"].append(nueva_fecha)
                     deporte["fechas"]["cierre"] = None
                     print("Deporte reactivado.")
                     return True
-                elif res == 0:
+                elif res == no:
                     print("El deporte se mantiene inactivo.")
                     return False
             return False
