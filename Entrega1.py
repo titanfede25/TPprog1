@@ -227,6 +227,9 @@ def crearDeporte(deportes, busqueda):
     Parámetros:
         deportes: dict
         busqueda: str
+
+    Returns:
+        bool: True si se creó o reactivó el deporte, False si se canceló o no se modificó.
     """
     if busqueda in deportes:
         print("Advertencia, este deporte ya existe.")
@@ -241,8 +244,14 @@ def crearDeporte(deportes, busqueda):
                     deporte["fechas"]["creacion"].append(nueva_fecha)
                     deporte["fechas"]["cierre"] = None
                     print("Deporte reactivado.")
+                    return True
                 elif res == 0:
                     print("El deporte se mantiene inactivo.")
+                    return False
+            return False
+        else:
+            print("El deporte ya está activo.")
+            return False
     else:
         arancel = float(input("Arancel: "))
         director = input("Nombre del instructor principal: ")
@@ -266,8 +275,11 @@ def crearDeporte(deportes, busqueda):
                 }
             }
             print("Deporte creado exitosamente.")
+            return True
         else:
             print("Operación cancelada.")
+            return False
+
 
 def listaDeDeportes(deportes):
     """
@@ -275,12 +287,15 @@ def listaDeDeportes(deportes):
 
     Parámetros:
         deportes: dict
+
+    Returns:
+        list: Lista de claves de deportes activos.
     """
-    activos = False
+    activos = []
     print("\nDeportes activos:")
     for clave, datos in deportes.items():
         if datos["activo"] and datos["fechas"]["cierre"] is None:
-            activos = True
+            activos.append(clave)
             print("---------------------------")
             print("Deporte:", clave)
             print("Arancel:", datos["arancel"])
@@ -290,19 +305,26 @@ def listaDeDeportes(deportes):
         print("No hay deportes activos registrados.")
     else:
         print("---------------------------")
+    return activos
+
 
 def modificarDeporte(deportes, busqueda):
     """
-    Se modifica el deporte
+    Se modifica el deporte.
 
     Parámetros:
         deportes: dict
         busqueda: str
+
+    Returns:
+        bool: True si se realizó alguna modificación, False si no.
     """
     if busqueda not in deportes:
         print("Deporte no existente")
+        return False
     else:
         userInput = -1
+        modificado = False
 
         while userInput != 0:
             print(busqueda, ":")
@@ -328,6 +350,7 @@ def modificarDeporte(deportes, busqueda):
                 if confirmar == "si":
                     deportes[busqueda]["arancel"] = cambiar
                     print("Tarifa modificada exitosamente\n")
+                    modificado = True
                 else:
                     print("Modificación cancelada\n")
 
@@ -338,8 +361,11 @@ def modificarDeporte(deportes, busqueda):
                 if confirmar == "si":
                     deportes[busqueda]["director principal"] = cambiar
                     print("Profesor cambiado exitosamente\n")
+                    modificado = True
                 else:
                     print("Modificación cancelada\n")
+        return modificado
+
 
 def eliminarDeporte(deportes, busqueda):
     """
@@ -348,13 +374,18 @@ def eliminarDeporte(deportes, busqueda):
     Parámetros:
         deportes: dict
         busqueda: str
+
+    Returns:
+        bool: True si se dio de baja, False si no.
     """
     if busqueda not in deportes:
         print("Error, deporte no existe.")
+        return False
     else:
         deporte = deportes[busqueda]
         if not deporte["activo"]:
             print("Error, el deporte ya está inactivo.")
+            return False
         else:
             print("\nDatos del deporte a eliminar:")
             print("ID:", busqueda)
@@ -362,14 +393,14 @@ def eliminarDeporte(deportes, busqueda):
 
             confirmar = input("¿Está seguro que desea dar de baja este deporte? [si/no]: ").lower()
             if confirmar == "si":
-                fechaCierre = input("Ingrese la fecha de cierre (YYYY-MM-DD): ")
+                fechaCierre = input("Ingrese la fecha de cierre (DD-MM-YYYY): ")
                 deporte["activo"] = False
                 deporte["fechas"]["cierre"] = fechaCierre
                 print("Deporte dado de baja exitosamente.")
+                return True
             else:
                 print("Operación cancelada.")
-
-
+                return False
 #----------------------------------------------------------------------------------------------
 # FUNCIONES DE PAGOS
 #----------------------------------------------------------------------------------------------
