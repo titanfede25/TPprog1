@@ -14,7 +14,7 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
-...
+import time
 
 
 #----------------------------------------------------------------------------------------------
@@ -30,45 +30,55 @@ def altaSocio(clientes, buscar):
     Devuelve:
         clientes (diccionario)
     """
-    if (buscar in clientes.keys()):
-        print("Error, el socio ya existe.\n")
-        print(clientes[buscar])
-    else:
-        nombre = input("Nombre: ")
-        apellido = input("Apellido: ")
+    
+    nombre = str(input("Nombre: "))
+    while nombre.isalpha() == False:
+        nombre = str(input("Error! Seleccione nuevo nombre: "))
+    apellido = str(input("Apellido: "))
+    while apellido.isalpha() == False:
+        apellido = str(input("Error! Seleccione nuevo nombre: "))
 
-        diaNacimiento = int(input("Dia de nacimiento: "))
-        mesNacimiento = int(input("Mes de nacimiento: "))
-        anioNacimiento = int(input("año de nacimiento: "))
-        anioBiciesto = (anioNacimiento % 4 == 0 and (anioNacimiento % 100 != 0 or anioNacimiento % 400 == 0))
-
-
-        if (diaNacimiento < 1 or diaNacimiento > 31 or mesNacimiento < 1 or mesNacimiento > 12 or anioNacimiento < 1900 or anioNacimiento > 2025):
-            print("Error, fecha invalida")
-            return
-        elif ((mesNacimiento == 4 or mesNacimiento == 6 or mesNacimiento == 9 or  mesNacimiento == 11) and diaNacimiento == 31):
-            print("Error, fecha invalida.")
-            return
-        elif (not anioBiciesto and mesNacimiento == 2 and diaNacimiento > 29):
-            print("Error, fecha invalida")
-            return
-
-        fechaNacimiento = "" + str(diaNacimiento) + "/" + str(mesNacimiento) + "/" + str(anioNacimiento)
-
-        clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
-
-        NumTelefonos = int(input("Cantidad de telefonos: "))
-
-        for i in range (NumTelefonos):
-            tel = input("Telefono " + str(i+1) + ": ")
-            if (int(tel) <= 0):
-                print("Error, numero invalido.")
-            else:
-                clientes[buscar]["telefonos"]["telefono"+str(i+1)] = tel
-
-        print("Socio agregado exitosamente")
-
+    diaNacimiento = int(input("Dia de nacimiento: "))
+    if diaNacimiento < 1 or diaNacimiento > 31:
+        print("Error, fecha invalida")
         return clientes
+
+    mesNacimiento = int(input("Mes de nacimiento: "))
+    if mesNacimiento < 1 or mesNacimiento > 12 or ((mesNacimiento == 4 or mesNacimiento == 6 or mesNacimiento == 9 or  mesNacimiento == 11) and diaNacimiento == 31):
+        print("Error, fecha invalida")
+        return clientes
+    
+    anioNacimiento = int(input("año de nacimiento: "))
+    if (anioNacimiento < 1900 or anioNacimiento > 2025):
+        print("Error, fecha invalida")
+        return clientes
+    
+    anioBiciesto = (anioNacimiento % 4 == 0 and (anioNacimiento % 100 != 0 or anioNacimiento % 400 == 0))        
+    if (not anioBiciesto and mesNacimiento == 2 and diaNacimiento > 29):
+        print("Error, fecha invalida")
+        return clientes
+    
+    if len(str(diaNacimiento)) == 1:
+        diaNacimiento = "0" + str(diaNacimiento)
+    if len(str(mesNacimiento)) == 1:
+        mesNacimiento = "0" + str(mesNacimiento)
+    fechaNacimiento = f"{str(diaNacimiento)}/{str(mesNacimiento)}/{str(anioNacimiento)}"
+
+    clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
+
+    numTelefonos = int(input("Cantidad de telefonos: "))
+    while numTelefonos < 1:
+        numTelefonos = int(input("Error! Ingrese cantidad de telefonos de nuevo: "))  
+    for i in range (numTelefonos):
+        tel = int(input("Telefono " + str(i + 1) + ": "))
+        while len(str(tel)) < 10 or len(str(tel)) > 13 or tel < 0:
+            tel = int(input("Error! Ingrese Telefono " + str(i + 1) + " de nuevo: "))
+        clientes[buscar]["telefonos"]["telefono" + str(i + 1)] = tel
+
+    print("Socio agregado exitosamente")
+
+    return clientes
+    
 
 def listarSocios(clientes):
     """
@@ -94,7 +104,7 @@ def listarSocios(clientes):
 
 def modificarSocio(clientes, buscar):
     """
-    Modifica el valor de un socio
+    Modifica los atributos de un socio
 
     Parametros:
         clientes (dict)
@@ -102,78 +112,103 @@ def modificarSocio(clientes, buscar):
     Devuelve:
         clientes (diccionario)
     """
-    if (buscar not in clientes.keys()):
-        print("Error, dni no existe.")
-    else:
-        userInput = -1
-        while (userInput != 0):
-            print(buscar, ":")
-            print(clientes[buscar])
-            print("Que desea modificar?")
-            print("---------------------------")
-            print("[1] Modificar estado")
-            print("[2] Modificar nombre")
-            print("[3] Modificar apellido")
-            print("[4] Modificar fecha de nacimiento")
-            print("[5] Modificar telefonnos")
-            print("---------------------------")
-            print("[0] Volver al menú anterior")
-            print("---------------------------")
+   
+    userInput = -1
+    while (userInput != 0):
+        print(buscar, ":")
+        print(clientes[buscar])
+        print("Que desea modificar?")
+        print("---------------------------")
+        print("[1] Modificar estado")
+        print("[2] Modificar nombre")
+        print("[3] Modificar apellido")
+        print("[4] Modificar fecha de nacimiento")
+        print("[5] Modificar telefonnos")
+        print("---------------------------")
+        print("[0] Volver al menú anterior")
+        print("---------------------------")
 
-            userInput = int(input("Seleccione una opción: "))
+        userInput = int(input("Seleccione una opción: "))
 
-            print("")
-            if (userInput == 0):
-                break
-            elif (userInput == 1):
-                res = -1
-                estadoSocio = clientes[buscar]["activo"]
-                while (res != 1 and res != 0):
-                    print("Estado actual:", estadoSocio)
-                    if (estadoSocio == True):
-                        res = int(input("Desea darlo de baja? [1 = si / 0 = No]: "))
-                    else:
-                        res = int(input("Desea darlo de alta? [1 = si / 0 = No]: "))
+        print("")
+        if (userInput == 0):
+            break
+        elif (userInput == 1):
+            res = -1
+            estadoSocio = clientes[buscar]["activo"]
+            while (res != 1 and res != 0):
+                print("Estado actual:", estadoSocio)
+                if (estadoSocio == True):
+                    res = int(input("Desea darlo de baja? [1 = si / 0 = No]: ")) #PODEMOS DARLO DE BAJA DE UN DEPORTE ACA MEJOR Y LO QUE ESTA ACA LO PONEMOS EN ELIMINAR
+                else:
+                    res = int(input("Desea darlo de alta? [1 = si / 0 = No]: "))
+                if (res == 1 and estadoSocio == True):
+                        clientes[buscar]["activo"] = False
+                        print("Socio dado de baja exitosamente.\n")
+                elif (res == 1 and estadoSocio == False):
+                        clientes[buscar]["activo"] = True
+                        print("Socio dado de alta exitosamente.\n")
+                elif (res == 0):
+                    print("No se hicieron cambios\n")
+                else:
+                    print("Error, input invalido\n")       
 
-                    if (res == 1 and estadoSocio == True):
-                            clientes[buscar]["activo"] = False
-                            print("Socio dado de baja exitosamente.\n")
-                    elif (res == 1 and estadoSocio == False):
-                            clientes[buscar]["activo"] = True
-                            print("Socio dado de alta exitosamente.\n")
-                    elif (res == 0):
-                        print("No se hicieron cambios\n")
-                    else:
-                        print("Error, input invalido\n")                
-            elif (userInput == 2):
-                print("Nombre actual:", clientes[buscar]["nombre"])
-                cambiar = input("Nuevo nombre: ")
-                clientes[buscar]["nombre"] = cambiar
-                print("Nombre cambiado existosamente")
-            elif (userInput == 3):
-                print("Apellido actual:", clientes[buscar]["apellido"])
-                cambiar = input("Nuevo apellido: ")
-                clientes[buscar]["apellido"] = cambiar
-                print("Apellido cambiado existosamente")
-            elif (userInput == 4):
-                print("Fecha de nacimiento actual:", clientes[buscar]["fechaNacimiento"])
-                cambiar = input("Nueva fecha de nacimiento [dd/mm/aaaa]: ")
-                clientes[buscar]["fechaNacimiento"] = cambiar
-                print("Fecha de nacimiento cambiada existosamente")
-            elif (userInput == 5):
-                print("Actual cant de telefonos:", len(clientes[buscar]["telefonos"]))
-                cant = int(input("Nueva cant de telefonos: "))
-                for i in range (cant):
-                    cambiar = input("Nuevo telefono " + str(i+1) + ": ")
-                    if (int(cambiar) <= 0):
-                        print("Error, numero invalido.\n")
-                        i -= 1
-                    else:
-                        clientes[buscar]["telefonos"]["telefono"+str(i)] = cambiar
+        elif (userInput == 2):
+            print("Nombre actual: ", clientes[buscar]["nombre"])
+            cambiar = str(input("Nuevo nombre: "))
+            while cambiar.isalpha() == False:
+                cambiar = str(input("Error! Seleccione nuevo nombre: "))
+            clientes[buscar]["nombre"] = cambiar
+            print("Nombre cambiado existosamente")
+
+        elif (userInput == 3):
+            print("Apellido actual: ", clientes[buscar]["apellido"])
+            cambiar = str(input("Nuevo apellido: "))
+            while cambiar.isalpha() == False:
+                cambiar = str(input("Error! Seleccione nuevo apellido: "))
+            clientes[buscar]["apellido"] = cambiar
+            print("Apellido cambiado existosamente")
+
+        elif (userInput == 4):
+            print("Fecha de nacimiento actual: ", clientes[buscar]["fechaNacimiento"])
+            diaNacimiento = int(input("Dia de nacimiento: "))
+            if diaNacimiento < 1 or diaNacimiento > 31:
+                print("Error, fecha invalida")
+                return clientes
+            mesNacimiento = int(input("Mes de nacimiento: "))
+            if mesNacimiento < 1 or mesNacimiento > 12 or ((mesNacimiento == 4 or mesNacimiento == 6 or mesNacimiento == 9 or  mesNacimiento == 11) and diaNacimiento == 31):
+                print("Error, fecha invalida")
+                return clientes
+            anioNacimiento = int(input("año de nacimiento: "))
+            if (anioNacimiento < 1900 or anioNacimiento > 2025):
+                print("Error, fecha invalida")
+                return clientes
+            anioBiciesto = (anioNacimiento % 4 == 0 and (anioNacimiento % 100 != 0 or anioNacimiento % 400 == 0))        
+            if (not anioBiciesto and mesNacimiento == 2 and diaNacimiento > 29):
+                print("Error, fecha invalida")
+                return clientes
+            if len(str(diaNacimiento)) == 1:
+                diaNacimiento = "0" + str(diaNacimiento)
+            if len(str(mesNacimiento)) == 1:
+                mesNacimiento = "0" + str(mesNacimiento)
+            fechaNacimiento = f"{str(diaNacimiento)}/{str(mesNacimiento)}/{str(anioNacimiento)}"
+            clientes[buscar]["fechaNacimiento"] = fechaNacimiento
+            print("Fecha de nacimiento cambiada existosamente")
+
+        elif (userInput == 5):
+            print("Actual cant de telefonos: ", len(clientes[buscar]["telefonos"]))
+            numTelefonos = int(input("Cantidad de telefonos: "))
+            while numTelefonos < 1:
+                numTelefonos = int(input("Error! Ingrese cantidad de telefonos de nuevo: "))  
+            for i in range (numTelefonos):
+                tel = int(input("Telefono " + str( i+ 1) + ": "))
+                while len(str(tel)) < 10 or len(str(tel)) > 13 or tel < 0:
+                    tel = int(input("Error! Ingrese Telefono " + str(i + 1) + " de nuevo: "))
+                clientes[buscar]["telefonos"]["telefono"+str(i + 1)] = tel
 
     return clientes
 
-def bajaSocio(clientes, deportes, pagos, buscar): # Terminar
+def bajaSocio(clientes, deportes, pagos, buscar): # COMENTARIO MENCIONADO EN MODIFICAR
     """
     Dar de baja logicamente a un socio
 
@@ -184,36 +219,27 @@ def bajaSocio(clientes, deportes, pagos, buscar): # Terminar
     Devuelve:
         clientes (diccionario)
     """
-    if (buscar not in clientes.keys()):
-        print("Error, dni no existe.")
-        return
+    if (not clientes[buscar]["activo"]):
+        print("Cliente ya inactivo")
+        return clientes
 
-    else:
-        ultimoAnioPagado = pagos[buscar]["ano"]
-        ultimoMesPagado = pagos[buscar]["mes"]
+    print(f"\nLista de pagos de {clientes[buscar]["nombre"]} {clientes[buscar]["apellido"]}:")
 
-    userInput = -1
-    while (userInput != 1 and userInput != 0):
+    for k, v in pagos.items():
+        if (v["idSocio"] == buscar):
+            print(k, v)
 
-        for i in range(len(pagos)):
-            print()
-            print("---------------------------")
-            print("MENÚ PRINCIPAL > MENÚ DE PAGOS")
-            print("---------------------------")
-            print("[1] Darse de baja de un deporte")
-            print("[2] Darse de baja totalmente")
-            print("---------------------------")
-            print("[0] Volver al menú anterior")
-            print("---------------------------")
-            print()
-
-        clienteEliminar = clientes[buscar]
-        if (clienteEliminar["activo"] == False):
-            print("Error, el socio ya esta dao de baja.")
+    res = -1
+    while (res < 0 or res > 1):
+        res = int(input("\nDesea dar de baja al socio? [1 = Si / 0 = No]: "))
+        if (res == 1):
+            clientes[buscar]["activo"] = False
+            print("Cliente dado de baja existosamente.")
+        elif (res == 0):
+            print("No pasó nada.")
         else:
-            clienteEliminar["activo"] = False
-            print("\nSocio", buscar, clienteEliminar["nombre"], clienteEliminar["apellido"] , "dado de baja exitosamente.")
-    
+            print("Input invalido.")
+
     return clientes
 
 
@@ -225,37 +251,29 @@ def crearDeporte(deportes, busqueda):
     Se crea o reactiva un deporte.
 
     Parámetros:
-        deportes: dict
-        busqueda: str
-
-    Returns:
-        bool: True si se creó o reactivó el deporte, False si se canceló o no se modificó.
+        deportes (dict)
+        busqueda (str)
+    Devuelve:
+        deportes (dict)
     """
-    if busqueda in deportes:
+    if busqueda in deportes.keys():
         print("Advertencia, este deporte ya existe.")
-        deporte = deportes[busqueda]
-        if not deporte["activo"]:
+        if deportes[busqueda]["activo"] == False:
             res = -1
             while res not in [0, 1]:
-                res = input("El deporte está dado de baja. ¿Desea darlo de alta? [Sí / No]:").lower()
-                if res == si:
-                    nueva_fecha = input("Ingrese la nueva fecha de reactivación (DD-MM-YYYY): ")
-                    deporte["activo"] = True
-                    deporte["fechas"]["creacion"].append(nueva_fecha)
-                    deporte["fechas"]["cierre"] = None
-                    print("Deporte reactivado.")
-                    return True
-                elif res == no:
+                res = int(input("El deporte está dado de baja. ¿Desea darlo de alta? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    deportes[busqueda]["activo"] = True
+                    n = 1 + len(deportes[busqueda]["fechasActividad"])
+                    deportes[busqueda]["fechasActividad"][f"fecha{n}"] = [time.strftime("%d/%m/%Y")]
+                elif res == 0:
                     print("El deporte se mantiene inactivo.")
-                    return False
-            return False
-        else:
-            print("El deporte ya está activo.")
-            return False
     else:
         arancel = float(input("Arancel: "))
-        director = input("Nombre del instructor principal: ")
-        fecha_creacion = input("Ingrese la fecha de creación (YYYY-MM-DD): ")
+        while arancel < 0:
+            arancel = float(input("Error! Ingrese arancel de nuevo: "))
+        director = str(input("Nombre del director principal: "))
+        fecha_creacion = time.strftime("%d/%m/%Y")
 
         print("\nDatos ingresados:")
         print("Deporte:", busqueda)
@@ -263,22 +281,23 @@ def crearDeporte(deportes, busqueda):
         print("Director:", director)
         print("Fecha de creación:", fecha_creacion)
 
-        confirmar = input("¿Los datos son correctos? [si/no]: ").lower()
-        if confirmar == "si":
-            deportes[busqueda] = {
-                "activo": True,
-                "arancel": arancel,
-                "director principal": director,
-                "fechas": {
-                    "creacion": [fecha_creacion],
-                    "cierre": None
+       
+        res = -1
+        while res not in [0, 1]:
+            res = int(input("¿Los datos son correctos? [1 = Sí / 0 = No]: "))
+            if res == 1:
+                deportes[busqueda] = {
+                    "activo": True,
+                    "arancel": arancel,
+                    "director principal": director,
+                    "fechasActividad": {
+                        "fecha1": [fecha_creacion]
+                    }
                 }
-            }
-            print("Deporte creado exitosamente.")
-            return True
-        else:
-            print("Operación cancelada.")
-            return False
+                print("Deporte creado exitosamente.")
+            elif res == 0:
+                print("Operación cancelada.")
+    return deportes
 
 
 def listaDeDeportes(deportes):
@@ -287,186 +306,420 @@ def listaDeDeportes(deportes):
 
     Parámetros:
         deportes: dict
-
-    Returns:
-        list: Lista de claves de deportes activos.
     """
-    activos = []
+    activos = False
     print("\nDeportes activos:")
     for clave, datos in deportes.items():
-        if datos["activo"] and datos["fechas"]["cierre"] is None:
-            activos.append(clave)
+        if datos["activo"] == True:
+            activos = True
             print("---------------------------")
             print("Deporte:", clave)
             print("Arancel:", datos["arancel"])
             print("Director principal:", datos["director principal"])
-            print("Fechas de creación:", ", ".join(datos["fechas"]["creacion"]))
-    if not activos:
+            print("Fechas de actividad: ", datos["fechasActividad"])
+    if activos == False:
         print("No hay deportes activos registrados.")
     else:
         print("---------------------------")
-    return activos
+    
+    return
 
 
-def modificarDeporte(deportes, busqueda):
+def modificarDeporte(deportes):
     """
     Se modifica el deporte.
 
     Parámetros:
         deportes: dict
-        busqueda: str
 
     Returns:
-        bool: True si se realizó alguna modificación, False si no.
+        Deportes
     """
-    if busqueda not in deportes:
-        print("Deporte no existente")
-        return False
-    else:
-        userInput = -1
-        modificado = False
+    keys = list(deportes.keys())
+    for i in range(len(keys)): 
+        print (f"[{i+1}] {keys[i]}")
+    eleccion = int(input("Seleccione el número del deporte que desea modificar: "))
+    while eleccion < 1 or eleccion > len(keys):
+        eleccion = int(input("Error seleccionar un numero apropiado: "))
+    deporteSeleccionado = keys[eleccion - 1]
 
-        while userInput != 0:
-            print(busqueda, ":")
-            print(deportes[busqueda])
-            print("¿Qué desea modificar?")
-            print("---------------------------")
-            print("[1] Modificar arancel")
-            print("[2] Modificar profesor principal")
-            print("---------------------------")
-            print("[0] Volver al menú anterior")
-            print("---------------------------")
+    userInput = -1                   
+    while userInput != 0:
+        print(deporteSeleccionado, ":")
+        print(deportes[deporteSeleccionado]) 
+        print("¿Qué desea modificar?")
+        print("---------------------------")
+        print("[1] Modificar arancel")
+        print("[2] Modificar director principal")
+        print("---------------------------")
+        print("[0] Volver al menú anterior")
+        print("---------------------------")
 
-            userInput = int(input("Seleccione una opción: "))
-            print("")
+        userInput = int(input("Seleccione una opción: "))
+        print("")
 
-            if userInput == 0:
-                print("Volviendo al menú anterior...\n")
+        if userInput == 0:
+            print("Volviendo al menú anterior...\n")
 
-            elif userInput == 1:
-                print("Arancel actual:", deportes[busqueda]["arancel"])
-                cambiar = float(input("Nueva tarifa: "))
-                confirmar = input(f"¿Desea guardar el nuevo arancel {cambiar}? [si/no]: ").lower()
-                if confirmar == "si":
-                    deportes[busqueda]["arancel"] = cambiar
+        elif userInput == 1:
+            print("Arancel actual:", deportes[deporteSeleccionado]["arancel"])
+            cambiar = float(input("Nueva tarifa: "))
+            while cambiar < 0:
+                cambiar = float(input("Error! Ingrese arancel de nuevo: "))
+            res = -1
+            while res not in [0, 1]:
+                res = int(input(f"¿Desea guardar el nuevo arancel {cambiar}? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    deportes[deporteSeleccionado]["arancel"] = cambiar
                     print("Tarifa modificada exitosamente\n")
-                    modificado = True
-                else:
+                elif res == 0:
                     print("Modificación cancelada\n")
 
-            elif userInput == 2:
-                print("Profesor actual:", deportes[busqueda]["director principal"])
-                cambiar = input("Nuevo profesor principal: ")
-                confirmar = input(f"¿Desea guardar el nuevo profesor '{cambiar}'? [si/no]: ").lower()
-                if confirmar == "si":
-                    deportes[busqueda]["director principal"] = cambiar
-                    print("Profesor cambiado exitosamente\n")
-                    modificado = True
-                else:
+        elif userInput == 2:
+            print("Profesor actual:", deportes[deporteSeleccionado]["director principal"])
+            cambiar = str(input("Nuevo director principal: "))
+            res = -1
+            while res not in [0, 1]:
+                res = int(input(f"¿Desea guardar el nuevo director principal {cambiar}? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    deportes[deporteSeleccionado]["director principal"] = cambiar
+                    print("Tarifa modificada exitosamente\n")
+                elif res == 0:
                     print("Modificación cancelada\n")
-        return modificado
+
+    return deportes
 
 
-def eliminarDeporte(deportes, busqueda):
+
+def eliminarDeporte(deportes):
     """
-    Da de baja un deporte y registra la fecha de cierre.
+    Da de baja un deporte activo y registra la fecha de cierre.
 
     Parámetros:
         deportes: dict
-        busqueda: str
 
     Returns:
-        bool: True si se dio de baja, False si no.
+        deportes (dict)
     """
-    if busqueda not in deportes:
-        print("Error, deporte no existe.")
-        return False
-    else:
-        deporte = deportes[busqueda]
-        if not deporte["activo"]:
-            print("Error, el deporte ya está inactivo.")
-            return False
-        else:
-            print("\nDatos del deporte a eliminar:")
-            print("ID:", busqueda)
-            print("Fechas de creación:", ", ".join(deporte["fechas"]["creacion"]))
+    keys = [k for k, v in deportes.items() if v["activo"] == True]
 
-            confirmar = input("¿Está seguro que desea dar de baja este deporte? [si/no]: ").lower()
-            if confirmar == "si":
-                fechaCierre = input("Ingrese la fecha de cierre (DD-MM-YYYY): ")
-                deporte["activo"] = False
-                deporte["fechas"]["cierre"] = fechaCierre
-                print("Deporte dado de baja exitosamente.")
-                return True
-            else:
-                print("Operación cancelada.")
-                return False
+    if not keys:
+        print("No hay deportes activos para dar de baja.")
+        return deportes
+
+    print("\nDeportes activos:")
+    for i in range(len(keys)): 
+        print(f"[{i+1}] {keys[i]}")
+
+    eleccion = int(input("Seleccione el número del deporte que desea dar de baja: "))
+    while eleccion < 1 or eleccion > len(keys):
+        eleccion = int(input("Error: seleccione un número válido: "))
+    
+    deporteSeleccionado = keys[eleccion - 1]
+
+    res = -1
+    while res not in [0, 1]:
+        res = int(input(f"¿Desea dar de baja {deporteSeleccionado}? [1 = Sí / 0 = No]: "))
+        if res == 1:
+            deportes[deporteSeleccionado]["activo"] = False
+            n = len(deportes[deporteSeleccionado]["fechasActividad"])
+            deportes[deporteSeleccionado]["fechasActividad"][f"fechas{n}"].append(time.strftime("%d/%m/%Y"))
+            print(f"Deporte '{deporteSeleccionado}' dado de baja exitosamente.\n")
+        elif res == 0:
+            print("Baja cancelada.\n")
+    return deportes
+
 #----------------------------------------------------------------------------------------------
 # FUNCIONES DE PAGOS
 #----------------------------------------------------------------------------------------------
 def registrarPago(pagos, socios, deportes):
     """
     Registra un nuevo pago hecho por un socio.
+
+    parametros:
+        pagos (dict)
+        socios (dict)
+        deportes (dict)
+
+    devuelve
+        pagos (dict)
     """
-    dni = input("Ingrese DNI del socio: ")
+    anioActual = int(time.strftime("%Y"))
+    mesActual = int(time.strftime("%m"))
+    dni = str(input("Ingrese DNI del socio: "))
 
     # Verificar si el socio existe y está activo
     if dni not in socios.keys():
         print("Error: el socio no existe.")
-        return
+        return pagos
     if not socios[dni]["activo"]:
         print("Error: el socio está dado de baja.")
-        return
+        return pagos
+
+    keysDeportes = list(deportes.keys())
+    for i in range(len(keysDeportes)): 
+        print (f"[{i+1}] {keysDeportes[i]}")
+    eleccion = int(input("Seleccione el número del deporte: "))
+    while eleccion < 1 or eleccion > len(keysDeportes):
+        eleccion = int(input("Error seleccionar un numero apropiado: "))
+    deporteSeleccionado = keysDeportes[eleccion - 1]
+
+    mes = 13
+    anio = anioActual
+    while (mes > mesActual and anio == anioActual):
+        mes = -1
+        while (mes < 1 or mes > 12):
+            mes = int(input("\nIngrese el mes del pago (ej: 10 para octubre): "))
+        anio = 9999
+        while (anio < 1900 or anio > anioActual):
+            anio = int(input("\nIngrese el año del pago: "))
+        if (mes > mesActual and anio == anioActual):
+            print("\nError, fecha invalida.")
     
-    # Mostrar lista de deportes activos
-    print("\nDeportes disponibles:")
-    for dep, datos in deportes.items():
-        if datos.get("activo", False):
-            print(f"- {dep} (${datos.get('arancel',0)})")
+    keysPagos = list(pagos.keys())
+    for i in range(len(keysPagos)):
+        if pagos[keysPagos[i]]["mes"] == mes and pagos[keysPagos[i]]["ano"] == anio and dni == pagos[keysPagos[i]]["idSocio"] and deporteSeleccionado == pagos[keysPagos[i]]["idDeporte"]:
+            print("Pago invalido, pago ya efectuado.")
+            return pagos
     
-    deporte = input("\nIngrese el deporte: ").lower()
-    if deporte not in deportes.keys() or not deportes[deporte].get("activo", False):
-        print("Error: deporte inválido o inactivo.")
-        return
+    activoEnFecha = False
+    for periodo in deportes[deporteSeleccionado]["fechasActividad"].values():
+        # Fecha de inicio
+        diaI, mesI, anioI = periodo[0].split("/")
+        anioI = int(anioI)
+        mesI = int(mesI)
 
-    mes = input("Ingrese el mes del pago (ej: 10 para octubre): ")
-    anio = input("Ingrese el año del pago: ")
+        # Fecha de cierre (si existe)
+        if len(periodo) == 2:
+            diaF, mesF, anioF = periodo[1].split("/")
+            anioF = int(anioF)
+            mesF = int(mesF)
+        else:
+            # Si no hay cierre, se asume activo hasta hoy
+            anioF = int(time.strftime("%Y"))
+            mesF = int(time.strftime("%m"))
+        
+        if (anio > anioI or (anio == anioI and mes >= mesI)) and (anio < anioF or (anio == anioF and mes <= mesF)):
+            activoEnFecha = True
+    if not activoEnFecha:
+        print(f"Error: el deporte seleccionado no estaba activo en esa fecha")
+        return pagos
 
-    monto = deportes[deporte]["arancel"]
 
-    # Guardar el pago
-    id_pago = f"{dni}-{deporte}-{mes}-{anio}" #  año.mes.dia hora.mes.segundo
-    if id_pago in pagos:
-        print("Error: este pago ya fue registrado.")
-        return
     
-    pagos[id_pago] = {
-        "dni": dni,
-        "deporte": deporte,
-        "mes": mes,
-        "anio": anio,
-        "monto": monto
-    }
+    opcionDePago = -1
+    while (opcionDePago < 1 or opcionDePago > 3):
+        print("\nSeleccione el medio de pago:")
+        print("[1] Efectivo")
+        print("[2] Tarjeta")
+        print("[3] Transferencia")
+        opcionDePago = int(input(("\nOpcion elegida:")))
 
-    print(f"\n✅ Pago registrado con éxito por ${monto} para {socios[dni]['nombre']} {socios[dni]['apellido']} ({deporte}).")
+    if (opcionDePago == 1):
+        metodoDePago = "efectivo"
+    elif (opcionDePago == 2):
+        metodoDePago = "tarjeta"
+    else:
+        metodoDePago = "transferencia"
 
-def eliminarPago(pagos):
+
+    monto = deportes[deporteSeleccionado]["arancel"]
+    if (mesActual > mes and anioActual == anio) or (anioActual > anio):
+        monto *= 1.2
+        print(f"Usted debe pagar {monto} que está un 20% aumentado, debido a que está atrasado. Aceptas el pago? [1 = si / 0 = No]")
+    else:
+        print(f"Usted debe pagar {monto}. Aceptas el pago? [1 = si / 0 = No]")
+    res = -1
+    while (res < 0 or res > 1):
+        res = int(input(""))
+        if (res == 1):
+            id_pago = f"{anioActual}.{mesActual}.{time.strftime("%d")} {time.strftime("%H")}:{time.strftime("%M")}:{time.strftime("%S")}"
+
+            pagos[id_pago] = {
+                "idSocio": dni,
+                "idDeporte": deporteSeleccionado,
+                "estadoDePago": "pagado",
+                "monto": monto,
+                "ano": anio,
+                "mes": mes,
+                "metodoDePago": metodoDePago
+            }
+            
+
+            print(f"\nPago registrado con éxito por ${monto} para {socios[dni]['nombre']} {socios[dni]['apellido']} ({deporteSeleccionado}).")
+            print(pagos)
+
+            return pagos
+
+        elif (res == 0):
+            print("No se realizo el pago.")
+            return pagos
+        else:
+            print("Error, opcion invalida. Ingrese de nuevo.")
+
+
+
+    return pagos
+
+def eliminarPago(pagos, socios):
     """
-    Elimina un pago ya registrado.
+    Elimina un pago
+
+    Parámetros:
+        pagos (dict)
+        socios (dict)
+        deportes (dict)
+
+    Devuelve:
+        pagos (dict)
     """
-    dni = input("Ingrese DNI del socio: ")
-    deporte = input("Ingrese el deporte: ").lower()
-    mes = input("Ingrese el mes del pago (ej: 10 para octubre): ")
-    anio = input("Ingrese el año del pago: ")
-
-    id_pago = f"{dni}-{deporte}-{mes}-{anio}"
-
-    if id_pago not in pagos.keys():
-        print("Error: no existe ese pago.")
-        return
+    dni = str(input("Ingrese DNI del socio: "))
+    if dni not in socios.keys():
+        print("Error: el socio no existe.")
+        return pagos
     
-    del pagos[id_pago]
-    print("✅ Pago eliminado correctamente.")
+    # Filtrar los deportes en los que el socio tenga pagos
+    listaKeysPagos = list(pagos.keys())
+    listaDeportesPorSocio = []
+    for key in listaKeysPagos:
+        if pagos[key]["idSocio"] == dni and pagos[key]["idDeporte"] not in listaDeportesPorSocio:
+            listaDeportesPorSocio.append(pagos[key]["idDeporte"])
+
+    if not listaDeportesPorSocio:
+        print("El socio no tiene pagos registrados.")
+        return pagos
+
+    # Elegir deporte
+    for i, dep in enumerate(listaDeportesPorSocio):
+        print(f"[{i+1}] {dep}")
+    eleccion = int(input("Seleccione el número de deporte del pago: "))
+    while eleccion < 1 or eleccion > len(listaDeportesPorSocio):
+        eleccion = int(input("Error! Seleccionar un número apropiado: "))
+    deporteSeleccionado = listaDeportesPorSocio[eleccion - 1]
+
+    # Mostrar los pagos correspondientes al socio y deporte elegido
+    pagosFiltrados = []
+    contador = 0
+    for key in listaKeysPagos:
+        if pagos[key]["idSocio"] == dni and pagos[key]["idDeporte"] == deporteSeleccionado:
+            contador += 1
+            pagosFiltrados.append(key)
+            print(f"[{contador}] {pagos[key]}")
+
+    if not pagosFiltrados:
+        print("No hay pagos para este deporte.")
+        return pagos
+
+    # Elegir cuál eliminar
+    eleccion = int(input("Seleccione el número de pago: "))
+    while eleccion < 1 or eleccion > len(pagosFiltrados):
+        eleccion = int(input("Error! Seleccionar un número apropiado: "))
+
+    keySeleccionada = pagosFiltrados[eleccion - 1]
+    print("\nEste es el pago seleccionado:")
+    print(pagos[keySeleccionada])
+
+    print("ALERTA: Si confirmas, se eliminará permanentemente.")
+    confirmar = int(input("¿Quieres eliminar el pago? [1 = Sí / 0 = No]: "))
+    if confirmar == 1:
+        del pagos[keySeleccionada]
+        print("Pago eliminado exitosamente.")
+    else:
+        print("Operación cancelada.")
+
+    return pagos
+
+    
+#----------------------------------------------------------------------------------------------
+# FUNCIONES DE INFORMES
+#----------------------------------------------------------------------------------------------
+def mostrarPagosPorMesYAnio(pagos, socios, mesObjetivo, anoObjetivo):
+    def rellenar(texto, ancho, alineacion):
+        texto = str(texto)
+        largo = len(texto)
+        if largo >= ancho:
+            return texto[:ancho]
+        espacios = ancho - largo
+        if alineacion == "izquierda":
+            return texto + " " * espacios
+        else:
+            return " " * espacios + texto
+
+    anchoFecha = 21
+    anchoCliente = 25
+    anchoMonto = 10
+
+    encabezado = rellenar("Fecha/Hora", anchoFecha, "izquierda") + " | " + \
+                 rellenar("Cliente", anchoCliente, "izquierda") + " | " + \
+                 rellenar("Monto", anchoMonto, "derecha")
+    print(encabezado)
+    print("-" * len(encabezado))
+
+    for fechaHora in pagos:
+        registro = pagos[fechaHora]
+        if "idSocio" in registro and "mes" in registro and "ano" in registro and "monto" in registro:
+            if registro["mes"] == mesObjetivo and registro["ano"] == anoObjetivo:
+                idSocio = registro["idSocio"]
+                monto = registro["monto"]
+
+                if idSocio in socios:
+                    nombre = socios[idSocio]["nombre"]
+                    apellido = socios[idSocio]["apellido"]
+                    cliente = nombre + " " + apellido
+
+                    linea = rellenar(fechaHora, anchoFecha, "izquierda") + " | " + \
+                            rellenar(cliente, anchoCliente, "izquierda") + " | " + \
+                            rellenar(int(monto), anchoMonto, "derecha")
+                    print(linea)
+
+
+def matrizInforme2(pagos, anoObjetivo):
+    matriz = {}
+
+    for fechaHora in pagos:
+        registro = pagos[fechaHora]
+
+        if "ano" in registro and "mes" in registro and "idDeporte" in registro:
+            ano = registro["ano"]
+            mes = registro["mes"]
+            deporte = registro["idDeporte"]
+
+            if ano == anoObjetivo:
+                if deporte not in matriz:
+                    matriz[deporte] = [0] * 12
+                matriz[deporte][mes - 1] += 1
+
+    return matriz
+
+
+def rellenar(texto, ancho, alineacion):
+    texto = str(texto)
+    largo = len(texto)
+    if largo >= ancho:
+        return texto[:ancho]
+    espacios = ancho - largo
+    if alineacion == "izquierda":
+        return texto + " " * espacios
+    else:
+        return " " * espacios + texto
+
+def matrizInforme3(pagos, anoObjetivo):
+    matriz = {}
+
+    for fechaHora in pagos:
+        registro = pagos[fechaHora]
+
+        if "ano" in registro and "mes" in registro and "idDeporte" in registro and "monto" in registro:
+            ano = registro["ano"]
+            mes = registro["mes"]
+            deporte = registro["idDeporte"]
+            monto = registro["monto"]
+
+            if ano == anoObjetivo:
+                if deporte not in matriz:
+                    matriz[deporte] = [0] * 12
+                matriz[deporte][mes - 1] += monto
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -482,8 +735,8 @@ def main():
             "apellido": "Sznajderhaus",
             "fechaNacimiento": "07/04/2006",
             "telefonos": {
-                "telefono1": "5491125456655",
-                "telefono2": "5491134546589"
+                "telefono1": 5491125456655,
+                "telefono2": 5491134546589
             }
         },
         "99888777": {
@@ -492,7 +745,7 @@ def main():
             "apellido": "Sánchez",
             "fechaNacimiento": "02/09/2002",
             "telefonos": {
-                "telefono1": "5491134560987"
+                "telefono1": 5491134560987
             }
         },
         "30456789": {
@@ -501,7 +754,7 @@ def main():
             "apellido": "Fernández",
             "fechaNacimiento": "15/01/1998",
             "telefonos": {
-                "telefono1": "5491145671234"
+                "telefono1": 5491145671234
             }
         },
         "28543210": {
@@ -510,8 +763,8 @@ def main():
             "apellido": "Pérez",
             "fechaNacimiento": "20/05/2000",
             "telefonos": {
-                "telefono1": "5491139876543",
-                "telefono2": "5491123456789"
+                "telefono1": 5491139876543,
+                "telefono2": 5491123456789
             }
         },
         "32659874": {
@@ -520,7 +773,7 @@ def main():
             "apellido": "Martínez",
             "fechaNacimiento": "03/11/2003",
             "telefonos": {
-                "telefono1": "5491165432198"
+                "telefono1": 5491165432198
             }
         },
         "29547681": {
@@ -529,8 +782,8 @@ def main():
             "apellido": "González",
             "fechaNacimiento": "28/07/1999",
             "telefonos": {
-                "telefono1": "5491122223333",
-                "telefono2": "5491176543210"
+                "telefono1": 5491122223333,
+                "telefono2": 5491176543210
             }
         },
         "31478562": {
@@ -539,7 +792,7 @@ def main():
             "apellido": "Rodríguez",
             "fechaNacimiento": "12/12/2001",
             "telefonos": {
-                "telefono1": "5491187654321"
+                "telefono1": 5491187654321
             }
         },
         "27894561": {
@@ -548,8 +801,8 @@ def main():
             "apellido": "López",
             "fechaNacimiento": "25/06/2004",
             "telefonos": {
-                "telefono1": "5491132109876",
-                "telefono2": "5491198765432"
+                "telefono1": 5491132109876,
+                "telefono2": 5491198765432
             }
         },
         "30985642": {
@@ -558,7 +811,7 @@ def main():
             "apellido": "Díaz",
             "fechaNacimiento": "09/09/1997",
             "telefonos": {
-                "telefono1": "5491144445555"
+                "telefono1": 5491144445555
             }
         },
         "29765438": {
@@ -567,8 +820,8 @@ def main():
             "apellido": "Suárez",
             "fechaNacimiento": "18/03/2005",
             "telefonos": {
-                "telefono1": "5491155556666",
-                "telefono2": "5491177778888"
+                "telefono1": 5491155556666,
+                "telefono2": 5491177778888
             }
         },
         "31247859": {
@@ -577,7 +830,7 @@ def main():
             "apellido": "Romero",
             "fechaNacimiento": "30/10/2002",
             "telefonos": {
-                "telefono1": "5491166667777"
+                "telefono1": 5491166667777
             }
         },
         "28965473": {
@@ -586,115 +839,112 @@ def main():
             "apellido": "Castro",
             "fechaNacimiento": "05/08/2000",
             "telefonos": {
-                "telefono1": "5491133334444",
-                "telefono2": "5491199990000"
+                "telefono1": 5491133334444,
+                "telefono2": 5491199990000
             }
         }
     }
     
 
     deportes = {
-    "football": {
-        "activo": True,
-        "arancel": 35000.0,
-        "director principal": "Nicolás Medina",
-        "fechas": {
-            "creacion": ["2025-04-01"],
-            "cierre": None
-        }
-    },
-    "hockey": {
-        "activo": True,
-        "arancel": 27000.0,
-        "director principal": "Isabel Fuentes",
-        "fechas": {
-            "creacion": ["2025-02-14"],
-            "cierre": None
-        }
-    },
-            },
-    "basketball": {
-        "activo": True,
-        "arancel": 28000.0,
-        "director principal": "Isabel Martinez",
-        "fechas": {
-            "creacion": ["2025-02-28"],
-            "cierre": None
-        }
-    },
-    "voley": {
-        "activo": False,
-        "arancel": 29000.0,
-        "director principal": "Thiago Ribeiro",
-        "fechas": {
-            "creacion": ["2025-01-10", "2025-07-20"],
-            "cierre": "2025-09-30"
-        }
-    },
-    "jiuJitsu": {
-        "activo": True,
-        "arancel": 26000.0,
-        "director principal": "Bruno Sosa",
-        "fechas": {
-            "creacion": ["2025-05-05"],
-            "cierre": None
-        }
-    },
-    "boxeo": {
-        "activo": True,
-        "arancel": 37000.0,
-        "director principal": "Carla Vázquez",
-        "fechas": {
-            "creacion": ["2025-03-18"],
-            "cierre": None
-        }
-    },
-    "karate": {
-        "activo": False,
-        "arancel": 31000.0,
-        "director principal": "Lucía Herrera",
-        "fechas": {
-            "creacion": ["2025-06-01"],
-            "cierre": "2025-08-15"
-        }
-    },
-    "tennis": {
-        "activo": True,
-        "arancel": 28000.0,
-        "director principal": "Tomás Villalba",
-        "fechas": {
-            "creacion": ["2025-07-10"],
-            "cierre": None
-        }
-    },
-    "natacion": {
-        "activo": True,
-        "arancel": 33000.0,
-        "director principal": "Esteban Ríos",
-        "fechas": {
-            "creacion": ["2025-04-25"],
-            "cierre": None
-        }
-    },
-    "handball": {
-        "activo": True,
-        "arancel": 29000.0,
-        "director principal": "María Elena Torres",
-        "fechas": {
-            "creacion": ["2025-02-05"],
-            "cierre": None
-        }
-    },
-    "rugby": {
-        "activo": False,
-        "arancel": 40000.0,
-        "director principal": "Federico Ledesma",
-        "fechas": {
-            "creacion": ["2025-01-15"],
-            "cierre": "2025-07-01"
+        "netball": {
+            "activo": False,
+            "arancel": 29000.0,
+            "director principal": "Robert Lee",
+            "fechasActividad": {
+                "fechas1" : ["10/01/2025", "30/09/2025"]
+            }
+        },
+        "football": {
+            "activo": True,
+            "arancel": 35000.0,
+            "director principal": "Nicolás Medina",
+            "fechasActividad": {
+                "fechas1" : ["01/04/2025"]
+            }
+        },
+        "hockey": {
+            "activo": True,
+            "arancel": 27000.0,
+            "director principal": "Isabel Fuentes",
+            "fechasActividad": {
+                "fechas1" : ["14/02/2025"]
+            }
+        },
+        "basketball": {
+            "activo": True,
+            "arancel": 28000.0,
+            "director principal": "Isabel Martinez",
+            "fechasActividad": {
+                "fechas1": ["28/02/2025"],
+            }
+        },
+        "voley": {
+            "activo": True,
+            "arancel": 29000.0,
+            "director principal": "Thiago Ribeiro",
+            "fechasActividad": {
+                "fechas1": ["10/01/2025"],
+            }
+        },
+        "jiuJitsu": {
+            "activo": True,
+            "arancel": 26000.0,
+            "director principal": "Bruno Sosa",
+            "fechasActividad": {
+                "fechas1": ["05/05/2025"],
+            }
+        },
+        "boxeo": {
+            "activo": True,
+            "arancel": 37000.0,
+            "director principal": "Carla Vázquez",
+            "fechasActividad": {
+                "fechas1": ["18/03/2025"],
+            }
+        },
+        "karate": {
+            "activo": True,
+            "arancel": 31000.0,
+            "director principal": "Lucía Herrera",
+            "fechasActividad": {
+                "fechas1": ["01/06/2025"],
+            }
+        },
+        "tennis": {
+            "activo": True,
+            "arancel": 28000.0,
+            "director principal": "Tomás Villalba",
+            "fechasActividad": {
+                "fechas1": ["10/07/2025"],
+            }
+        },
+        "natacion": {
+            "activo": True,
+            "arancel": 33000.0,
+            "director principal": "Esteban Ríos",
+            "fechasActividad": {
+                "fechas1": ["25/04/2025"],
+            }
+        },
+        "handball": {
+            "activo": True,
+            "arancel": 29000.0,
+            "director principal": "María Elena Torres",
+            "fechasActividad": {
+                "fechas1": ["05/02/2025"],
+            }
+        },
+        "rugby": {
+            "activo": True,
+            "arancel": 40000.0,
+            "director principal": "Federico Ledesma",
+            "fechasActividad": {
+                "fechas1": ["15/01/2025"],
+            }
         }
     }
-})
+
 
     pagos = {
         "2025.10.15 17:34:18": {
@@ -702,8 +952,8 @@ def main():
             "idDeporte": "tennis",
             "estadoDePago": "pagado",
             "monto": 25000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.20 14:24:48": {
@@ -711,8 +961,8 @@ def main():
             "idDeporte": "boxeo",
             "estadoDePago": "pagado",
             "monto": 31000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.21 10:15:32": {
@@ -720,8 +970,8 @@ def main():
             "idDeporte": "natacion",
             "estadoDePago": "pagado",
             "monto": 32000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.22 11:45:00": {
@@ -729,8 +979,8 @@ def main():
             "idDeporte": "football",
             "estadoDePago": "pagado",
             "monto": 30000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.23 09:30:15": {
@@ -738,8 +988,8 @@ def main():
             "idDeporte": "basketball",
             "estadoDePago": "pagado",
             "monto": 28000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.24 16:00:00": {
@@ -747,8 +997,8 @@ def main():
             "idDeporte": "rugby",
             "estadoDePago": "pagado",
             "monto": 34000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.25 13:22:45": {
@@ -756,8 +1006,8 @@ def main():
             "idDeporte": "voley",
             "estadoDePago": "pagado",
             "monto": 27000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.26 18:45:30": {
@@ -765,8 +1015,8 @@ def main():
             "idDeporte": "hockey",
             "estadoDePago": "pagado",
             "monto": 29000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.27 12:10:50": {
@@ -774,8 +1024,8 @@ def main():
             "idDeporte": "jiuJitsu",
             "estadoDePago": "pagado",
             "monto": 28000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.28 14:55:20": {
@@ -783,8 +1033,8 @@ def main():
             "idDeporte": "karate",
             "estadoDePago": "pagado",
             "monto": 26000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
     } # Nuevo diccionario para almacenar los pagos
@@ -855,14 +1105,21 @@ def main():
                         dniBuscar = input("Ingresar dni válido: ")
 
                 if opcionSubmenu == "1":   # Opción 1 del submenú
-                    socios = altaSocio(socios, dniBuscar)
+                    if (dniBuscar in socios.keys()):
+                        print("Error, el socio ya existe.\n")
+                        print(socios[dniBuscar])
+                    else:
+                        socios = altaSocio(socios, dniBuscar)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
                     listarSocios(socios)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    socios = modificarSocio(socios, dniBuscar)
-                
+                    if (dniBuscar not in socios.keys()):
+                        print("Error, el socio no existe.\n")
+                    else:
+                        socios = modificarSocio(socios, dniBuscar)
+                    
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
                     socios = bajaSocio(socios, deportes, pagos, dniBuscar)
 
@@ -879,7 +1136,7 @@ def main():
                     print("MENÚ PRINCIPAL > MENÚ DE DEPORTES")
                     print("---------------------------")
                     print("[1] Ingresar deporte")
-                    print("[2] Buscar deporte/s")
+                    print("[2] Listar deportes")
                     print("[3] Modificar deporte")
                     print("[4] Eliminar deporte")
                     print("---------------------------")
@@ -893,27 +1150,23 @@ def main():
                     else:
                         input("Opción inválida. Presione ENTER para volver a seleccionar.")
                 print()
-                
-#                if (opcionSubmenu == "1" or opcionSubmenu == "3" or opcionSubmenu == "4"):                        
-                deporteBuscar = input("Ingresar deporte: ")
-#                    while (deporteBuscar not in deportes.keys()):
-#                        deporteBuscar = input("Ingresar deporte valido: ")
 
 
                 if opcionSubmenu == "0": # Opción salir del submenú
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    crearDeporte(deportes, deporteBuscar)
+                    deporte = str(input("Ingresar deporte: ").lower())
+                    deportes = crearDeporte(deportes, deporte)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
                     listaDeDeportes(deportes)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    modificarDeporte(deportes, deporteBuscar)
+                    deportes = modificarDeporte(deportes)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    eliminarDeporte(deportes, deporteBuscar)
+                    deportes = eliminarDeporte(deportes)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
@@ -946,10 +1199,10 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    registrarPago(pagos, socios, deportes)
+                    pagos = registrarPago(pagos, socios, deportes)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    eliminarPago(pagos)
+                    pagos = eliminarPago(pagos, socios)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
@@ -967,7 +1220,7 @@ def main():
                     print("[1] Pagos del mes")
                     print("[2] Resumen Anual de cantidad de pagos por deporte")
                     print("[3] Resumen Anual de Pagos  (Montos cobrados, deudas, descuentos)")
-                    print("[4] Porcentajes de Socios Morosos y al día")
+                    print("[4] ...")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
                     print("---------------------------")
@@ -984,23 +1237,60 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
-                    
+                    mes = int(time.strftime("%m"))
+                    ano = int(time.strftime("%Y"))
+   
+
+                    mostrarPagosPorMesYAnio(pagos, socios, mes, ano)
+
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
-                
+                    
+                    anoIngresado = int(input("Ingrese el año para el informe (ej: 2023): "))
+                    while anoIngresado < 1900 or anoIngresado > int(time.strftime("%Y")):
+                        anoIngresado = int(input("Año inválido. Ingrese un año válido: "))
+                        
+                    matriz = matrizInforme2(pagos, anoIngresado)
+
+    
+                    anchoDeporte = 20
+                    anchoMes = 4
+                    meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
+
+              
+                    encabezado = rellenar("Deporte", anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(m, anchoMes, "derecha") for m in meses)
+                    print(encabezado)
+                    print("-" * len(encabezado))
+
+         
+                    for deporte in matriz:
+                        fila = matriz[deporte]
+                        linea = rellenar(deporte, anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(valor, anchoMes, "derecha") for valor in fila)
+                        print(linea)
+
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
-                
+                    
+
+                    anchoDeporte = 20
+                    anchoMes = 10
+                    anchoTotal = 12
+                    meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
+
+                    encabezado = rellenar("Deporte", anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(m, anchoMes, "derecha") for m in meses) + " | " + rellenar("TOTAL", anchoTotal, "derecha")
+                    print(encabezado)
+                    print("-" * len(encabezado))
+
+                    for deporte in matriz:
+                        fila = matriz[deporte]
+                        total = sum(fila)
+                        linea = rellenar(deporte, anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(int(valor), anchoMes, "derecha") for valor in fila) + " | " + rellenar(int(total), anchoTotal, "derecha")
+                        print(linea)
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
                     ...
 
+
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
-
-
-
-        
+                
         if opcionSubmenu != "0": # Pausa entre opciones. No la realiza si se vuelve de un submenú
             input("\nPresione ENTER para volver al menú.")
             print("\n\n")
@@ -1008,3 +1298,4 @@ def main():
 
 # Punto de entrada al programa
 main()
+
